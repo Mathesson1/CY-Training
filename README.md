@@ -46,6 +46,8 @@ n stable
 > [!IMPORTANT]
 > Do not forget to setup the [./backend/.env](./backend/.env) file. Duplicate the [./backend/.env.example](./backend/.env.example) and replace the value as they are described.  
 > Going further into the installation, we will suppose this file exists.
+>
+> You might also want to change some of the values in your newly created [./backend/.env](./backend/.env), such as `DB_PASS` and `ADMIN_PASS`.
 
 - **For Debian / Ubuntu**:
 ```sh

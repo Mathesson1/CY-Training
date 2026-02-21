@@ -70,9 +70,6 @@ public class jOOQSetup {
      * @return Exception if one is throw,n, null otherwise.
      */
     public static Exception setup() {
-        // TODO check if already generated
-        // TODO generate every time in dev mode
-
         Configuration configuration = new Configuration()
                 .withJdbc(new Jdbc()
                         .withDriver("org.postgresql.Driver")

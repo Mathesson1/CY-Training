@@ -1,1 +1,1 @@
--- TO add basic data into the database
+-- To add basic data into the database
