@@ -7,7 +7,7 @@
         "server": "💥 Erreur côté serveur.\nVeuillez réessayer plus tard. 🛠️",
         "notFound": {
             "page": "La page que vous cherchez n'existe pas.\nVérifiez l'adresse. 🔎",
-            "view": "Erruer 404\nVous semblez perdu"
+            "view": "Erreur 404\nVous semblez perdu"
         }
     },
     "button": {
