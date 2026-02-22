@@ -9,6 +9,8 @@ services:
             - POSTGRES_PASSWORD=awesomepassword
         volumes:
             - postgresql:/var/lib/postgresql
+            - ./database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
+            #- ./database/samples.sql:/docker-entrypoint-initdb.d/samples.sql:ro # Uncomment to load sample data on first run
 
 volumes:
     postgresql:

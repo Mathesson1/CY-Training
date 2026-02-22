@@ -24,6 +24,7 @@ public class Hikari {
         hc.addDataSourceProperty("tcpKeepAlive", "true");
         hc.setConnectionTimeout(30000);
         hc.setLeakDetectionThreshold(60000);
+        hc.setInitializationFailTimeout(0);
         this.hds = new HikariDataSource(hc);
     }
 

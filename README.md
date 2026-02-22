@@ -11,6 +11,8 @@ Our goal is to make an interractive platform to enable student to create their o
   - [Requirements](#requirements)
   - [Installation](#installation)
     - [PoestgreSQL setup](#poestgresql-setup)
+      - [Manually](#manually)
+      - [Using Docker](#using-docker)
     - [jOOQ](#jooq)
   - [Running](#running)
   - [Building and production](#building-and-production)
@@ -69,6 +71,8 @@ cd ..
 
 ### PoestgreSQL setup
 
+#### Manually
+
 First, as superuser (or with a privileged enough account), create the database:
 
 - **For Debian / Ubuntu**:
@@ -95,6 +99,7 @@ CREATE USER cytraining WITH PASSWORD 'awesomepassword';
 
 -- For development purpose and peace of mind
 GRANT ALL PRIVILEGES ON DATABASE cytraining TO cytraining;
+
 -- For security when on production
 GRANT CONNECT ON DATABASE cytraining TO cytraining;
 GRANT USAGE ON SCHEMA public TO cytraining;
@@ -112,10 +117,12 @@ GRANT USAGE, SELECT ON SEQUENCES TO cytraining;
 > Do not forget to put the password of the **cytraining** user into the [./backend/.env](./backend/.env) file under `DATABASE_PASS`.
 > If you change the backend URL or port, mirror the changes in [./frontend/src/.env.development](./frontend/src/.env.development) and [./frontend/src/.env.production](./frontend/src/.env.production).
 
-If you run PostgreSQL from Docker (with the [compose](./docker-compose.yaml) file), you only need to do this:
+#### Using Docker
+
+If you run PostgreSQL from Docker (with the [compose](./docker-compose.yaml) file), you only need to grant the privileges:
 ```sh
 # connect to the PostgreSQL inside Docker
-docker compose exec database psql -U cytraining
+docker compose exec cytraining-db psql -U cytraining
 # then grant all the privileges from above
 ```
 
@@ -159,10 +166,12 @@ To launch the backend:
 ```sh
 cd ./backend
 # Debiant / Ubuntu
-./mvnw.sh exec:java
+./mvnw.sh compile exec:java
 # Windows
-./mvnw.cmd exec:java
+./mvnw.cmd compile exec:java
 ```
+
+You do not need the `compile` argument if you already ran jOOQ setup earlier, either manually or automatically. But if you changed your database, jOOQ's generated code will be outdated!
 
 ## Building and production
 
