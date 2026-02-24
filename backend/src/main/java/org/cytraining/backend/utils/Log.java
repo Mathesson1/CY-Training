@@ -1,6 +1,5 @@
 package org.cytraining.backend.utils;
 
-import org.cytraining.backend.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
@@ -16,7 +15,7 @@ public class Log {
 
     private Log() {
         // Setup the logger
-        this.log = LoggerFactory.getLogger(Main.class);
+        this.log = LoggerFactory.getLogger(Log.class);
     }
 
     /**
