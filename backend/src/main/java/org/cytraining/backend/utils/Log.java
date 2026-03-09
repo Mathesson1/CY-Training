@@ -10,12 +10,18 @@ import io.javalin.http.Context;
  * Singleton used to log globally.
  */
 public class Log {
-    private final static Log that = new Log();
-    private Logger log;
 
     private Log() {
-        // Setup the logger
-        this.log = LoggerFactory.getLogger(Log.class);
+    }
+
+    /**
+     * Create a logger for the given class.
+     *
+     * @param class1 The class that needs a logger.
+     * @return A configured logger for the class.
+     */
+    public static Logger createLogger(Class<?> class1) {
+        return LoggerFactory.getLogger(class1);
     }
 
     /**
@@ -24,8 +30,8 @@ public class Log {
      *
      * @param ctx
      */
-    public static void infoIp(Context ctx) {
-        that.log.info("[ " + ctx.ip() + "\t] " + ctx.url() + ": " + ctx.res().getStatus());
+    public static void infoIp(Logger log, Context ctx) {
+        log.info("[ " + ctx.ip() + "\t] " + ctx.url() + ": " + ctx.res().getStatus());
     }
 
     /**
@@ -33,8 +39,8 @@ public class Log {
      *
      * @param format the format string
      */
-    public static void fatal(String format) {
-        fatal(format, null);
+    public static void fatal(Logger log, String format) {
+        fatal(log, format, null);
     }
 
     /**
@@ -43,8 +49,8 @@ public class Log {
      * @param format the format string
      * @param arg    the argument
      */
-    public static void fatal(String format, Object arg) {
-        that.log.error(MarkerFactory.getMarker("FATAL"), format, arg);
+    public static void fatal(Logger log, String format, Object arg) {
+        log.error(MarkerFactory.getMarker("FATAL"), format, arg);
     }
 
     /**
@@ -53,15 +59,8 @@ public class Log {
      * @param format the format string
      * @param arg    the exception
      */
-    public static void fatal(String format, Throwable e) {
-        that.log.error(MarkerFactory.getMarker("FATAL"), format, e.getMessage());
+    public static void fatal(Logger log, String format, Throwable e) {
+        log.error(MarkerFactory.getMarker("FATAL"), format, e.getMessage());
         e.printStackTrace();
-    }
-
-    /**
-     * @return the logger
-     */
-    public static Logger getLog() {
-        return that.log;
     }
 }

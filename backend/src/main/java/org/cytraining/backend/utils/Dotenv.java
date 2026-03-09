@@ -12,6 +12,9 @@ import io.github.cdimascio.dotenv.DotenvEntry;
  * Singleton that enable to get all .env variables.
  */
 public class Dotenv {
+    // create a logger
+    private static final Logger log = Log.createLogger(Dotenv.class);
+
     private static final Dotenv that = new Dotenv();
 
     private boolean valid = false;
@@ -30,9 +33,6 @@ public class Dotenv {
     private String admin_pass;
 
     private Dotenv() {
-        // get the logger
-        Logger log = Log.getLog();
-
         // Load .env
         io.github.cdimascio.dotenv.Dotenv dotenv = io.github.cdimascio.dotenv.Dotenv.load();
 
@@ -52,7 +52,7 @@ public class Dotenv {
         // each expectedEntries left are missing
         if (expectedEntries.size() > 0) {
             expectedEntries.forEach(entry -> {
-                Log.fatal("The .env file does not contains the \"" + entry + "\" field!");
+                Log.fatal(log, "The .env file does not contains the \"" + entry + "\" field!");
             });
             return;
         }
