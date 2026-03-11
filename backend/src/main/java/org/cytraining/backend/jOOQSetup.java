@@ -13,8 +13,13 @@ import org.jooq.meta.jaxb.Generate;
 import org.jooq.meta.jaxb.Generator;
 import org.jooq.meta.jaxb.Jdbc;
 import org.jooq.meta.jaxb.Target;
+import org.slf4j.Logger;
 
 public class jOOQSetup {
+
+    // create a logger
+    private static final Logger log = Log.createLogger(jOOQSetup.class);
+
     public static void main(String[] args) throws Exception {
 
         // if args[0] is "manual", then ignore properties file
@@ -28,15 +33,14 @@ public class jOOQSetup {
         Properties properties = new Properties();
         try (InputStream input = jOOQSetup.class.getClassLoader().getResourceAsStream("jooq-setup.properties")) {
             if (input == null) {
-                Log.getLog().warn(
-                        "Unable to read \"jooq-setup.properties\". Using default behavior, which is to generate.");
+                log.warn("Unable to read \"jooq-setup.properties\". Using default behavior, which is to generate.");
                 toSetup = true;
             } else {
                 properties.load(input);
                 toSetup = Boolean.parseBoolean(properties.getProperty("auto_generate", "true"));
             }
         } catch (IOException ex) {
-            Log.getLog().warn(
+            log.warn(
                     "Unable to read \"jooq-setup.properties\". Using default behavior, which is to generate. See error below:");
             ex.printStackTrace();
             toSetup = true;
@@ -45,7 +49,7 @@ public class jOOQSetup {
         if (toSetup) {
             setupWithException();
         } else {
-            Log.getLog().info("Skipping generation");
+            log.info("Skipping generation");
         }
     }
 
@@ -95,7 +99,7 @@ public class jOOQSetup {
                                 .withClean(true)));
 
         try {
-            Log.getLog().info("Generating jOOQ database informations ...");
+            log.info("Generating jOOQ database informations ...");
             GenerationTool.generate(configuration);
             return null;
         } catch (Exception e) {
