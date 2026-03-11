@@ -91,7 +91,7 @@ public class Main {
         // setup admin account
         DSLContext jctx = jOOQ.getDsl();
 
-        String admin_email = "admin@cytraining.org";
+        String admin_email = Dotenv.getAdminMail();
 
         Result<Record> query = jctx.select().from(ACCOUNT)
                 .where(ACCOUNT.EMAIL.eq(admin_email)).fetch();
