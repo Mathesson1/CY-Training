@@ -12,6 +12,9 @@ import io.github.cdimascio.dotenv.DotenvEntry;
  * Singleton that enable to get all .env variables.
  */
 public class Dotenv {
+    // create a logger
+    private static final Logger log = Log.createLogger(Dotenv.class);
+
     private static final Dotenv that = new Dotenv();
 
     private boolean valid = false;
@@ -28,11 +31,9 @@ public class Dotenv {
     private int server_port;
 
     private String admin_pass;
+    private String admin_mail;
 
     private Dotenv() {
-        // get the logger
-        Logger log = Log.getLog();
-
         // Load .env
         io.github.cdimascio.dotenv.Dotenv dotenv = io.github.cdimascio.dotenv.Dotenv.load();
 
@@ -52,7 +53,7 @@ public class Dotenv {
         // each expectedEntries left are missing
         if (expectedEntries.size() > 0) {
             expectedEntries.forEach(entry -> {
-                Log.fatal("The .env file does not contains the \"" + entry + "\" field!");
+                Log.fatal(log, "The .env file does not contains the \"" + entry + "\" field!");
             });
             return;
         }
@@ -66,6 +67,7 @@ public class Dotenv {
         this.server_port = Integer.parseInt(dotenv.get("BACKEND_PORT"));
 
         this.admin_pass = dotenv.get("ADMIN_PASS");
+        this.admin_mail = dotenv.get("ADMIN_MAIL");
 
         // a bit weird here:
         // APP_MODE is only for development, it only serve to emulate which mode is used
@@ -155,5 +157,12 @@ public class Dotenv {
      */
     public static String getAdminPass() {
         return that.admin_pass;
+    }
+
+    /**
+     * @return the admin_mail
+     */
+    public static String getAdminMail() {
+        return that.admin_mail + "@cytraining.fr";
     }
 }

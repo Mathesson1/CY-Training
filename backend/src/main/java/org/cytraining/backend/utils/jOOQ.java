@@ -16,8 +16,6 @@ import org.jooq.impl.DefaultTransactionProvider;
 public class jOOQ {
     private static final jOOQ that = new jOOQ();
 
-    private boolean valid = false;
-
     private DSLContext dsl;
 
     private jOOQ() {
@@ -35,14 +33,6 @@ public class jOOQ {
                 .set(settings);
 
         this.dsl = DSL.using(configuration);
-        this.valid = true;
-    }
-
-    /**
-     * @return true if jOOQ has loaded properly
-     */
-    public static boolean isValid() {
-        return that.valid;
     }
 
     /**
