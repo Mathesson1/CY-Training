@@ -2,7 +2,11 @@ package org.cytraining.backend;
 
 import static io.javalin.apibuilder.ApiBuilder.path;
 import static org.cytraining.backend.model.Tables.ACCOUNT;
+import static org.cytraining.backend.model.Tables.ACCOUNT_ROLE;
 
+import java.io.File;
+
+import org.cytraining.backend.model.enums.RoleEnum;
 import org.cytraining.backend.routers.SetupRouter;
 import org.cytraining.backend.utils.Dotenv;
 import org.cytraining.backend.utils.Hasher;
@@ -56,16 +60,19 @@ public class Main {
                 });
             }
 
-            // will serve the built static frontend files
-            // this is for all assets
-            config.staticFiles.add(staticFiles -> {
-                staticFiles.directory = "../frontend/dist";
-                staticFiles.hostedPath = "/";
-                // to say it's not packaged inside the .jar
-                staticFiles.location = Location.EXTERNAL;
-            });
-            // this is for our SPA specifically
-            config.spaRoot.addFile("/", "../frontend/dist/index.html", Location.EXTERNAL);
+            // if frontend is built
+            if (new File("../frontend/dist.index.html").exists()) {
+                // will serve the built static frontend files
+                // this is for all assets
+                config.staticFiles.add(staticFiles -> {
+                    staticFiles.directory = "../frontend/dist";
+                    staticFiles.hostedPath = "/";
+                    // to say it's not packaged inside the .jar
+                    staticFiles.location = Location.EXTERNAL;
+                });
+                // this is for our SPA specifically
+                config.spaRoot.addFile("/", "../frontend/dist/index.html", Location.EXTERNAL);
+            }
 
             config.jetty.modifyServer(server -> server.setStopTimeout(5_000)); // wait 5 seconds for existing requests
                                                                                // to finish
@@ -94,21 +101,21 @@ public class Main {
         String admin_email = Dotenv.getAdminMail();
 
         Result<Record> query = jctx.select().from(ACCOUNT)
-                .where(ACCOUNT.EMAIL.eq(admin_email)).fetch();
+                .where(ACCOUNT.PRIMARY_EMAIL.eq(admin_email)).fetch();
         if (query.size() == 0) {
             log.info("Admin account not found, creating one ...");
             // create an admin account
-            jctx.insertInto(ACCOUNT, ACCOUNT.EMAIL,
-                    // ACCOUNT.EMAIL_VERIFIED,
-                    ACCOUNT.FIRST_NAME,
-                    ACCOUNT.LAST_NAME, ACCOUNT.PASSWORD)
+            jctx.insertInto(ACCOUNT, ACCOUNT.PRIMARY_EMAIL,
+                    ACCOUNT.EMAIL_VERIFIED,
+                    ACCOUNT.USERNAME,
+                    ACCOUNT.PASSWORD)
                     .values(admin_email,
-                            // true,
-                            "admin", "admin",
+                            true,
+                            "admin",
                             Hasher.hash(Dotenv.getAdminPass()))
                     .execute();
-            // jctx.insertInto(ACCOUNT_ROLE, ACCOUNT_ROLE.ACCOUNT_ID, ACCOUNT_ROLE.ROLE)
-            // .values(jctx.lastID().longValue(), RoleEnum.admin).execute();
+            jctx.insertInto(ACCOUNT_ROLE, ACCOUNT_ROLE.ACCOUNT_ID, ACCOUNT_ROLE.ROLE)
+                    .values(jctx.lastID().longValue(), RoleEnum.admin).execute();
         }
     }
 }
